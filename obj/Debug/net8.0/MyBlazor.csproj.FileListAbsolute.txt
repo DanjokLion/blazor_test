@@ -1029,3 +1029,4 @@ E:\projects\MyBlazor\obj\Debug\net8.0\MyBlazor.dll
 E:\projects\MyBlazor\obj\Debug\net8.0\refint\MyBlazor.dll
 E:\projects\MyBlazor\obj\Debug\net8.0\MyBlazor.pdb
 E:\projects\MyBlazor\obj\Debug\net8.0\ref\MyBlazor.dll
+E:\projects\MyBlazor\obj\Debug\net8.0\MyBlazor.sourcelink.json
