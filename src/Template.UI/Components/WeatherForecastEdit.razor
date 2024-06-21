@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Template.UI.Data
+
+<MudDialog @bind-IsVisible="IsVisible" Options="new() { CloseOnEscapeKey = true, FullWidth = true,  DisableBackdropClick = true, CloseButton = false}">
+
+    <TitleContent>
+        <div>
+            @*//TODO не красиво выглядит, нужно играть с css*@
+            <div align="right">
+                <MudIconButton Style="text-align: right" Disabled="@_isLoading" Color="Color.Default" Size="Size.Medium" OnClick="Close" Icon="@Icons.Material.Filled.Close"/>
+            </div>
+            <MudText Typo="Typo.h6"><MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.EditNote"/>Изменить:</MudText>
+        </div>
+    </TitleContent>
+  <DialogContent>
+    <div class="my-container">
+      <MudContainer>
+        <MudTextField @bind-Value="@_this.Id" Label="@nameof(WeatherForecast.Id)" Disabled="true"  />
+        <MudTextField @bind-Value="@_this.Summary" Label="@nameof(WeatherForecast.Summary)" AutoFocus="true"  />
+        <MudDateWheelPicker @bind-Value="@_this.Date" Label="@nameof(WeatherForecast.Date)" DateView="DateView.Both" ShowHeader="true" SubmitOnClose="true" DateFormat="dd.MM.yyyy HH.mm.ss" Color="Color.Primary" ShowToolbar="true" />
+        <MudTextField @bind-Value="@_this.TemperatureC" Label="@nameof(WeatherForecast.TemperatureC)"  />
+      </MudContainer>
+    </div>
+  </DialogContent>
+  <DialogActions>
+  <MudLoadingButton OnClick="SaveAsync" Color="Color.Success" Size="Size.Medium" @bind-Loading="@_isLoading">Сохранить</MudLoadingButton>
+        @if (!_this.Id.Equals(Guid.Empty))
+        {
+        <MudButton Disabled="@_isLoading" Color="Color.Error" Size="Size.Medium" OnClick="Delete">Удалить</MudButton>
+        }
+    <MudButton Disabled="@_isLoading" Color="Color.Default" Size="Size.Medium" OnClick="Close">Отмена</MudButton>
+  </DialogActions>
+</MudDialog>

@@ -1,0 +1,6 @@
+- name: Home
+  href: README.md
+- name: API Documentation
+  href: docs/api/
+- name: REST API
+  href: src/Template.Client/swagger.html

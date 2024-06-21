@@ -1,0 +1,141 @@
+variables:
+  CONFIG_BASE_YML_TEMPLATE_PATH: "base.txt"
+  CONFIG_TRIGGER_YML_TEMPLATE_PATH: "trigger.txt"
+  CONFIG_SERVICE_YML_TEMPLATE_PATH: "service-template.v2.0.gitlab-ci.yml"
+  URL1: "https://gitlab.dobrozaim.ru/api/v4/projects/93/repository/files/lib%2Fgitlab%2Fci%2Fdynamic%2Fci%2Fdynamic_templates%2Fdynamic-base.v1.0.gitlab-ci.yml/raw?ref=master"
+  URL2: "https://gitlab.dobrozaim.ru/api/v4/projects/93/repository/files/lib%2Fgitlab%2Fci%2Fdynamic%2Fci%2Fdynamic_templates%2Fdynamic-trigger.v1.0.gitlab-ci.yml/raw?ref=master"
+  PRIVATE_TOKEN: "y8i_pr6WfKsRtByktWym"
+
+stages:
+  - build
+  - trigger
+
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+generate-config:
+  tags:
+    - services-builder-docker
+  stage: build
+  script: 
+    - apt-get update
+    - apt-get install -y gettext-base
+    - apt-get install -y curl
+
+    - > 
+      curl "$URL1" 
+      -H "PRIVATE-TOKEN: y8i_pr6WfKsRtByktWym"
+      >> $CONFIG_BASE_YML_TEMPLATE_PATH
+
+    - > 
+      curl "$URL2" 
+      -H "PRIVATE-TOKEN: y8i_pr6WfKsRtByktWym"
+      >> $CONFIG_TRIGGER_YML_TEMPLATE_PATH
+
+    - declare -A service_config
+    - service_config['template-ui']='src/Template.UI/env.local'
+
+    # Приоритет у label мерджа, чтобы была возможность
+    # из разных веток собирать сервис при создании MR
+    - if [[ -n $CI_MERGE_REQUEST_LABELS ]]; then
+        WORKING_BRANCH=$CI_MERGE_REQUEST_LABELS;
+      else
+        WORKING_BRANCH=$CI_COMMIT_REF_NAME;
+      fi;
+
+    - echo $WORKING_BRANCH
+
+    - if [[ -z ${WORKING_BRANCH} ]]; then
+        echo "The service isn't defined!";
+        exit 1;
+      fi;
+
+    - cp $CONFIG_BASE_YML_TEMPLATE_PATH generated-config.yml
+
+    - mkdir services
+    - echo 'Разбиваем входную строку на подстроки (разделитель ,)'
+    - IFS=',' read -ra ADDR <<< $WORKING_BRANCH
+    - echo "There are ${#ADDR[*]} words in the text."
+    - >
+      for i in ${ADDR[@]}; do
+
+        echo "Сервис '$i'"
+        export SERVICE_NAME="$i"
+
+        for service in "${!service_config[@]}"; do
+          if [[ "$i" == $service ]] || [[ "$i" =~ ^([0-9]+)-$service-* ]] || [[ "$i" =~ ^stable-$service-* ]]; then
+            ENV_PARAMS_FILE="${service_config[$service]}";
+            break;
+          fi;
+        done
+
+      # Далее копирование файлов
+        echo ${ENV_PARAMS_FILE}
+      # - echo ${ENV_PARAMS_CLEAN_FILE}
+
+        if [[ -n $ENV_PARAMS_FILE ]]; then
+          export $(cat ${ENV_PARAMS_FILE} | xargs);
+        else
+          echo "The path of environment file is null!";
+          exit 1;
+        fi;
+    
+        if [[ -z ${PROJECT_PATH} ]]; then
+          echo "The service project path isn't defined!";
+          exit 1;
+        fi;
+
+        # Определение версии приложения
+        export VERSION="$(grep '<Version>.*</Version>' ${PROJECT_PATH} | sed 's/[<>/ ]//g; s/Version//g; s/	//g')"
+        if [[ -z ${VERSION} ]]; then
+          export VERSION="1.0.0";
+        fi;
+        echo "Service version - ${VERSION}"
+
+        cp $CONFIG_SERVICE_YML_TEMPLATE_PATH services/${SERVICE_NAME}-config.yml
+        echo "" >> services/${SERVICE_NAME}-config.yml
+        echo $'\n' >> generated-config.yml
+        echo $'\n' >> generated-config.yml
+        envsubst < $CONFIG_TRIGGER_YML_TEMPLATE_PATH >> generated-config.yml
+
+      # Параметры GitLab
+        echo ${CI_MERGE_REQUEST_ID}
+        echo ${CI_PIPELINE_ID}
+        echo ${CI_COMMIT_REF_NAME}
+        echo ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
+      # Параметры проектов, по которым необходимо выполнить проверку и регистрацию тестов
+        echo ${IMAGE_NAME}
+        echo ${IMAGE_LIBRARY}
+        echo ${ENV_PARAMS_FILE}
+      # - echo ${ENV_PARAMS_CLEAN_FILE}
+        echo ${SERVICE_NAME}
+        echo ${VERSION}
+        echo ${DOCKER_FILE_PATH}
+        echo ${PROJECT_PATH}
+        echo ${SETTINGS_FILE_PATH}
+        echo ${TEST_PROJECT_PATH}
+        echo ${CI_ENVIRONMENT_NAME}
+        echo ${GITLAB_USER_LOGIN}
+        echo Ветка мерджа $CI_COMMIT_BRANCH
+        echo ветка по умолчанию $CI_DEFAULT_BRANCH
+        echo $CI_JOB_STAGE
+      done
+
+  artifacts:
+    paths:
+      - generated-config.yml
+      - services
+
+ 
+run-child-pipelines:
+  stage: trigger
+  trigger:
+    strategy: depend
+    include:
+      - artifact: generated-config.yml
+        job: generate-config
+  needs:
+    - job: generate-config
+  variables:
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID

@@ -1,0 +1,28 @@
+﻿@using Template.UI.Components.Validations.MasksValidation
+
+<MudTabs Elevation="2"  Position ="@Position.Right">
+    <MudTabPanel Text="PatternMask">
+        <PatternMaskComponent/>
+    </MudTabPanel>
+    <MudTabPanel Text="MultiMask">
+        <MultiMaskComponent/>
+    </MudTabPanel>
+    <MudTabPanel Text="DateMask">
+        <DateMaskComponent/>
+    </MudTabPanel>
+    <MudTabPanel Text="RegexMask">
+        <RegexMaskComponent/>
+    </MudTabPanel>
+    <MudTabPanel Text="RegexMask.IPv4">
+        <RegexMaskIPv4Component/>
+    </MudTabPanel>
+    <MudTabPanel Text="RegexMask.IPv6">
+        <RegexMaskIPv6Component/>
+    </MudTabPanel>
+    <MudTabPanel Text="RegexMask.Email">
+        <RegexMaskEmailComponent/>
+    </MudTabPanel>
+    <MudTabPanel Text="BlockMask">
+        <BlockMaskComponent/>
+    </MudTabPanel>
+</MudTabs>

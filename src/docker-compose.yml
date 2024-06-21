@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  template.ui:
+    image: ${DOCKER_REGISTRY-}templateui
+    build:
+      context: .
+      dockerfile: Template.UI/Dockerfile

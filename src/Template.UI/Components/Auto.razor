@@ -1,0 +1,37 @@
+﻿@page "/broken_component"
+@inject NavigationManager NavigationManager
+
+<ErrorFilterModel></ErrorFilterModel>
+<div>
+    <MudTable Items="@Elements" Breakpoint="Breakpoint.Sm" Square="true" Dense="true"
+              FixedFooter="true" FixedHeader="true" Height="30em" RowsPerPage="25">
+        <ToolBarContent>
+            <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudSpacer />
+            <MudButton Color="Color.Success" Size="Size.Medium" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" OnClick="_ => GenerateEditException()">Добавить запись</MudButton>
+
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>ИД</MudTh>
+            <MudTh>Цвет</MudTh>
+            <MudTh>Год выпуска</MudTh>
+            <MudTh>Фирма изготовитель</MudTh>
+            <MudTh>Описание</MudTh>
+            <MudTh Class="auto-right-5"></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Colour</MudTd>
+            <MudTd>@context.Year</MudTd>
+            <MudTd>@context.Company</MudTd>
+            <MudTd>@context.Desctiption</MudTd>
+            <MudTd>
+                <MudIconButton Color="Color.Info" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="_ => GenerateEditException()"></MudIconButton>
+                <MudIconButton Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="_ => GenerateDeliteException()"></MudIconButton>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</div>

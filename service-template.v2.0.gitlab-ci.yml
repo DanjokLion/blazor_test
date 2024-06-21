@@ -1,0 +1,32 @@
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+
+
+default:
+  before_script:
+
+    - echo CI_MERGE_REQUEST_ID ${CI_MERGE_REQUEST_ID}
+    - echo CI_PIPELINE_ID ${CI_PIPELINE_ID}
+    - echo CI_COMMIT_REF_NAME ${CI_COMMIT_REF_NAME}
+    - echo CI_MERGE_REQUEST_TARGET_BRANCH_NAME ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
+    - echo IMAGE_NAME ${IMAGE_NAME}
+    - echo IMAGE_LIBRARY ${IMAGE_LIBRARY}
+    - echo ENV_PARAMS_FILE ${ENV_PARAMS_FILE}
+    - echo SERVICE_NAME ${SERVICE_NAME}
+    - echo VERSION ${VERSION}
+    - echo DOCKER_FILE_PATH ${DOCKER_FILE_PATH}
+    - echo PROJECT_PATH ${PROJECT_PATH}
+    - echo SETTINGS_FILE_PATH ${SETTINGS_FILE_PATH}
+    - echo TEST_PROJECT_PATH ${TEST_PROJECT_PATH}
+    - echo CI_ENVIRONMENT_NAME ${CI_ENVIRONMENT_NAME}
+    - echo GITLAB_USER_LOGIN ${GITLAB_USER_LOGIN}
+    - echo CI_COMMIT_BRANCH $CI_COMMIT_BRANCH
+    - echo CI_DEFAULT_BRANCH $CI_DEFAULT_BRANCH
+    - echo CI_JOB_STAGE $CI_JOB_STAGE
+
+
+include: 
+  - project: 'csharp/devops'
+    ref: 'master'
+    file: 'lib/gitlab/ci/templates/.gitlab-ci.v6.0.yml'

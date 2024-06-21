@@ -1,0 +1,45 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                    <MudTextField T="string" Label="Имя пользователя" Required="true" RequiredError="Введите имя"/>
+                    <MudTextField T="string" Label="Адрес электронной почты" Required="true" RequiredError="Введите адрес эл. почты"
+                                  Validation="@(new EmailAddressAttribute() {ErrorMessage = "Адрес электронной почты недействителен"})"/>
+                    <MudTextField T="string" Label="Пароль" HelperText="Введите пароль" @ref="_passwordField"
+                                  InputType="InputType.Password"
+                                  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
+                                  RequiredError="Введите пароль"/>
+                    <MudTextField T="string"
+                                  Label="Проверочный ввод пароля" HelperText="Введите пароль повторно" InputType="InputType.Password"
+                                  Validation="@(new Func<string, string>(PasswordMatch))"/>
+                    <div class="d-flex">
+                        <MudRadioGroup T="string" Required="true" RequiredError="Введите тип аккаунта">
+                            <MudRadio Option="@("Personal")">Личный</MudRadio>
+                            <MudRadio Option="@("Professional")">Служебный</MudRadio>
+                        </MudRadioGroup>
+                    </div>
+                    <div class="d-flex align-center justify-space-between">
+                        <MudCheckBox T="bool" Required="true" RequiredError="Подтвердите согласие с условиями регистрации" Label="Я согласен!"  />
+                        <MudButton Variant="Variant.Filled" Color="Color.Success" Disabled="@(!_success)" Class="ml-auto">Регистрация</MudButton>
+                    </div>
+            </MudForm>   
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Success" DisableElevation="true" OnClick="@(()=>_form.Validate())">Validate</MudButton>
+            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=>_form.Reset())" Class="mx-2">Reset</MudButton>
+            <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=>_form.ResetValidation())">Reset Validation</MudButton>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="5">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.subtitle2">@($"Ошибки валидации ({_errors.Length})")</MudText>
+                @foreach (var error in _errors)
+                {
+                    <MudText Color="@Color.Error">@error</MudText>
+                }
+        </MudPaper>
+    </MudItem>
+</MudGrid>

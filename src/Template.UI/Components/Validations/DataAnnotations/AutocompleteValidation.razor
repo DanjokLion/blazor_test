@@ -1,0 +1,22 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject ISnackbar Snackbar
+
+<MudGrid>
+    <MudItem xs="12" sm="6" md="4">
+        <EditForm EditContext="_editContext" OnInvalidSubmit="@HandelValidSubmit"
+                  OnValidSubmit="@HandelValidSubmit">
+            <DataAnnotationsValidator />
+            <MudAutocomplete Label="Тип машины" @bind-Value="_choice.CarType" Required="true"
+                             SearchFunc="@SearchAsync" Immediate="true" CoerceValue ResetValueOnEmptyText="true"
+                             OpenIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Info"
+                             Validation="@(new Func<string, IEnumerable<string>>(ValidateCarTypes))" />
+            <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Success"
+                       Class="ml-auto mt-3 mb-3" OnClick="@(()=>success=_editContext.Validate())">Validate</MudButton>
+            @if (success)
+            {
+                Snackbar.Add("Валидация прошла успешно", Severity.Success);
+            }
+            <ValidationSummary />
+        </EditForm>
+    </MudItem>
+</MudGrid>

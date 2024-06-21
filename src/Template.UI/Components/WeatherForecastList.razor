@@ -1,0 +1,55 @@
+﻿@inject ILogger<WeatherForecastList> _logger
+@using Microsoft.AspNetCore.Components
+@using MudBlazor
+@using Template.UI.Data
+@using Microsoft.Extensions.Logging;
+
+<WeatherForecastFilter OnClick="async filter=>await FilterAsync(filter)" />
+
+<MudTable Items="@_data" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_isLoading"
+          Filter="new Func<WeatherForecast, bool>(FilterFunc)" LoadingProgressColor="Color.Info" Dense="true"
+          FixedFooter="true" FixedHeader="true" Height="30em" RowsPerPage="25">
+  <ToolBarContent>
+    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    <MudSpacer />
+    <MudButton Color="Color.Success" Size="Size.Medium" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" OnClick="_ => AddClickAsync()">Добавить запись</MudButton>
+  </ToolBarContent>
+  <HeaderContent>
+    <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.Id)">@nameof(WeatherForecast.Id)</MudTableSortLabel></MudTh>
+    <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.Summary)"> @nameof(WeatherForecast.Summary)</MudTableSortLabel></MudTh>
+    <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.TemperatureC)">@nameof(WeatherForecast.TemperatureC)</MudTableSortLabel></MudTh>
+    <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x => x.Date)">@nameof(WeatherForecast.Date)</MudTableSortLabel></MudTh>
+    <MudTh>Action</MudTh>
+  </HeaderContent>
+
+  <RowTemplate>
+    <MudTd>
+            @context.Id
+      <MudTooltip Text="Копировать">
+        <MudIconButton Icon="@Icons.Material.Filled.FileCopy" Color="Color.Primary" Size="Size.Small"
+                       OnClick="_ => Copy(context.Id)"></MudIconButton>
+      </MudTooltip>
+
+    </MudTd>
+    <MudTd>@context.Summary</MudTd>
+    <MudTd>@context.TemperatureC</MudTd>
+    <MudTd>@context.Date</MudTd>
+
+    <MudTd>
+        <MudIconButton Disabled="@_isLoading" Color="Color.Info" Size="Size.Small" Icon="@Icons.Material.Filled.Edit" OnClick="_ => EditClickAsync(context)"></MudIconButton>
+        <MudIconButton Disabled="@_isLoading" Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Filled.Delete" OnClick="_ => DeleteClickAsync(context)"></MudIconButton>
+        <MudMenu Icon="@Icons.Material.Filled.ArrowDropDown" Size="Size.Small">
+          <MudMenuItem>Действие</MudMenuItem>
+          <MudMenuItem>Еще действие</MudMenuItem>
+          <MudMenuItem>...</MudMenuItem>
+        </MudMenu>
+    </MudTd>
+
+  </RowTemplate>
+  <PagerContent>
+    <MudTablePager />
+  </PagerContent>
+</MudTable>
+
+
+<WeatherForecastEdit @ref="_editDialog" OnSave="async dialogData=>await UserDialogCallbackAsync(dialogData)" />

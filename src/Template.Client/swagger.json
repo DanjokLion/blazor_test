@@ -1,0 +1,129 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Template.App",
+    "description": "Service 2000",
+    "contact": {
+      "url": "http://docpo2.ru/doku.php?id=отделы:сервисы:standart:стандарт_по_написанию_инструкций"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/template/Template": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Регистрация документа",
+        "operationId": "api/template/TemplatePOST",
+        "consumes": [
+          "application/json-patch+json",
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/TemplateDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/TemplateModel"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/ProblemDetails"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ProblemDetails": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "instance": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {},
+      "example": "{\r\n  \"Type\": \"Microsoft.AspNetCore.Http.BadHttpRequestException\",\r\n  \"Title\": \"One or more validation errors occurred\",\r\n  \"Status\": 400,\r\n  \"Extensions\": {}\r\n}"
+    },
+    "TemplateDto": {
+      "type": "object",
+      "properties": {
+        "external_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "format": "double",
+          "type": "number"
+        },
+        "quantity": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "sum": {
+          "format": "double",
+          "type": "number"
+        },
+        "measurement_unit": {
+          "type": "string"
+        },
+        "total": {
+          "format": "double",
+          "type": "number"
+        }
+      }
+    },
+    "TemplateModel": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "error": {},
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

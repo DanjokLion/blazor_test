@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Components
+@using MudBlazor
+@using Template.UI.Data
+
+
+
+    <div class="row">
+        <div class="col-3">
+            <MudDatePicker Label="Заглушка" @bind-Date="@_filters" Clearable />
+        </div>
+        <div class="col-3">
+            <MudDatePicker Label="Заглушка" @bind-Date="@_filters" Clearable />
+
+        </div>
+        <div class="col-3">
+            <MudDatePicker Label="Заглушка" @bind-Date="@_filters" Clearable />
+        </div>
+    </div>
+    <div class="text-end">
+        <MudButton Size="Size.Small" Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => GenerateException())">Применить фильтры</MudButton>
+        <MudButton Size="Size.Small" Variant="Variant.Filled" OnClick="@(() => GenerateException())">Сбросить фильтры</MudButton>
+    </div>
+<br/>

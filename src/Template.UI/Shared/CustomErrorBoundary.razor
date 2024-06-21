@@ -1,0 +1,22 @@
+﻿@inherits ErrorBoundary
+@inject ISnackbar _snackbar
+
+@if (CurrentException is null)
+{
+    @ChildContent
+}
+else if (ErrorContent is not null)
+{
+    @ErrorContent(CurrentException)
+}
+else
+{
+    @ChildContent
+
+    @foreach (var ex in receivedExceptions)
+    {
+        _snackbar.Add(@ex.Message, Severity.Error);
+    }
+
+    Recover();
+}

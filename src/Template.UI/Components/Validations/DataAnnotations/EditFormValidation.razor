@@ -1,0 +1,44 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+<DataAnnotationsValidator/>
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudCard>
+            <MudCardContent>
+                <MudTextField Label="Имя" HelperText="Максимум 8 символов"
+                              @bind-Value="model.Username" For="@(() => model.Username)"/>
+                <MudTextField Label="Адрес эл. почты" HelperText="Введите адрес эл. почты" Class="mt-3"
+                              @bind-Value="model.Email" For="@(() => model.Email)"/>
+                <MudTextField Label="Пароль" HelperText="Придумайте пароль" Class="mt-3"
+                              @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
+                <MudTextField Label="Повтор пароля" HelperText="Повторный ввод пароля" Class="mt-3"
+                              @bind-Value="model.RepeatPassword" For="@(() => model.RepeatPassword)" InputType="InputType.Password"/>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success" Class="ml-auto">Регистрация</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="5">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.subtitle2">Список ошибок валидации</MudText>
+            @if (success)
+            {
+                <MudText Color="Color.Success">Регистрация прошла успешно</MudText>
+            }
+            else
+            {
+                <MudText Color="@Color.Error">
+                    <ValidationSummary />
+                </MudText>
+            }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MudText Typo="Typo.body2" Align="Align.Center">
+            Заполните форму правильно, чтобы увидеть сообщение об успешном завершении регистрации.
+        </MudText>
+    </MudItem>
+</MudGrid>
+</EditForm>

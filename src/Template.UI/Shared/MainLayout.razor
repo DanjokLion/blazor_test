@@ -1,0 +1,58 @@
+﻿@inherits LayoutComponentBase
+
+<MudLayout>
+    <MudAppBar Elevation="1" Dense="@dense">
+        <MudDialogProvider />
+        <MudSnackbarProvider />
+
+        <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_currentTheme" />
+        <MudIcon Icon="@Icons.Material.Filled.AcUnit" />
+        <MudText>Template UI</MudText>
+
+        <MudSpacer />
+        <MudIconButton Icon="@_icon" Color="Color.Inherit" OnClick="ToggleTheme" />
+        <MudAvatar Color="Color.Tertiary" Size="Size.Small">DV</MudAvatar>
+        <MudIconButton Icon="@Icons.Filled.ExitToApp" Color="Color.Inherit" OnClick="@DrawerToggle" />
+
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" Fixed="true" Elevation="2" DisableOverlay="false" Variant="@DrawerVariant.Mini" OpenMiniOnHover="false">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+           <CustomErrorBoundary>
+               @Body
+           </CustomErrorBoundary>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+
+
+@code {
+    bool _drawerOpen;
+    bool dense = true;
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private MudTheme _currentTheme = new()
+        {
+            ZIndex = new()
+            {
+                Dialog = 500 //default:1400
+            }
+        };
+
+    private bool _isDarkMode = true;
+
+    private string? _icon = Icons.Material.Filled.Brightness5;
+
+    private void ToggleTheme()
+    {
+        _isDarkMode = !_isDarkMode;
+        _icon = _isDarkMode ? Icons.Material.Filled.Brightness5 : Icons.Material.Filled.Brightness4;
+    }
+}
